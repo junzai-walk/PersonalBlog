@@ -1,14 +1,16 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Project } from '../types';
+import ProjectModal from '../components/ProjectModal';
 
 const Projects: React.FC = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState('全部');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
 
-  const categories = ['全部', 'Vue3', 'Vue2', 'Nuxt.js', 'React', '微信小程序', 'H5移动应用', 'Three.js', 'Node.js'];
-  
-  const projects = [
+  const initialProjects: Project[] = [
     {
       id: 'company-official',
       title: '公司官网',
@@ -71,7 +73,7 @@ const Projects: React.FC = () => {
       category: 'Node.js',
       tags: ['Node.js', 'Koa', 'MySQL', 'Redis'],
       desc: '凯奥思官网的管理后台，负责内容发布、权限管理及数据持久化。',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkeOGFjl0YtcQ8E4qkK09iZsALDj4r0x5MaGsEWTrsG5uw5myN9t1dwU1zbX3y6LNK-AJlD7V-isBCNmHc7dJcgEbExvBj8ozEXxydzbyJ2Kl_9-KkE6Eiv-o0EB1-1O72kPKQRhtOXWEHGsE4d-pKLdvMXhnt29r9dtMnXYQ4LUofb87dobOfoqh2SIIzO6YQ8HyDBkw9DnJtxx782It6CzBAzuUBZ5CPHiU5AAlbgGBjasFm4za1MkVg6gptm4marhD0r3RajtA4',
+      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkeOGFjl0YtcQ8E4qkK09iZsALDj4r0x5MaGsEWTrsG5uw5myF9t1dwU1zbX3y6LNK-AJlD7V-isBCNmHc7dJcgEbExvBj8ozEXxydzbyJ2Kl_9-KkE6Eiv-o0EB1-1O72kPKQRhtOXWEHGsE4d-pKLdvMXhnt29r9dtMnXYQ4LUofb87dobOfoqh2SIIzO6YQ8HyDBkw9DnJtxx782It6CzBAzuUBZ5CPHiU5AAlbgGBjasFm4za1MkVg6gptm4marhD0r3RajtA4',
     },
     {
       id: 'pet-mobile',
@@ -91,18 +93,62 @@ const Projects: React.FC = () => {
     }
   ];
 
+  const [projects, setProjects] = useState<Project[]>(() => {
+    const saved = localStorage.getItem('portfolio-projects');
+    return saved ? JSON.parse(saved) : initialProjects;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('portfolio-projects', JSON.stringify(projects));
+  }, [projects]);
+
+  const categories = ['全部', 'Vue3', 'Vue2', 'Nuxt.js', 'React', '微信小程序', 'H5移动应用', 'Three.js', 'Node.js'];
+
+  const handleSaveProject = (project: Project) => {
+    if (editingProject) {
+      setProjects(prev => prev.map(p => p.id === project.id ? project : p));
+    } else {
+      setProjects(prev => [project, ...prev]);
+    }
+    setEditingProject(null);
+  };
+
+  const handleDeleteProject = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (window.confirm('确定要删除这个项目吗？')) {
+      setProjects(prev => prev.filter(p => p.id !== id));
+    }
+  };
+
+  const handleEditProject = (e: React.MouseEvent, project: Project) => {
+    e.stopPropagation();
+    setEditingProject(project);
+    setIsModalOpen(true);
+  };
+
   const filteredProjects = filter === '全部' 
     ? projects 
     : projects.filter(p => p.category === filter || p.tags.includes(filter));
 
   return (
     <div className="max-w-[1200px] mx-auto w-full px-6 py-12">
-      <div className="flex flex-col items-center text-center mb-16">
+      <div className="flex flex-col items-center text-center mb-16 relative">
         <span className="px-3 py-1 text-xs font-bold tracking-widest uppercase bg-primary/10 text-primary rounded-full mb-4">2024 项目作品集</span>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 max-w-2xl">为 Web 打造的工程化解决方案</h1>
         <p className="text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
           专注于高性能 Web 应用、前端架构设计以及复杂数据可视化系统的全方位展示。
         </p>
+        
+        <button 
+          onClick={() => {
+            setEditingProject(null);
+            setIsModalOpen(true);
+          }}
+          className="mt-8 flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+        >
+          <span className="material-symbols-outlined">add</span>
+          新增项目
+        </button>
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -130,8 +176,19 @@ const Projects: React.FC = () => {
             style={{ animationDelay: `${i * 100}ms` }}
           >
             <div className="relative w-full aspect-video overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                 <span className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-lg text-white font-bold border border-white/20">查看详情</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                 <button 
+                  onClick={(e) => handleEditProject(e, p)}
+                  className="p-2 bg-white/20 backdrop-blur-md rounded-lg text-white font-bold border border-white/20 hover:bg-white/30 transition-colors"
+                >
+                  <span className="material-symbols-outlined">edit</span>
+                </button>
+                <button 
+                  onClick={(e) => handleDeleteProject(e, p.id)}
+                  className="p-2 bg-red-500/50 backdrop-blur-md rounded-lg text-white font-bold border border-white/20 hover:bg-red-500/70 transition-colors"
+                >
+                  <span className="material-symbols-outlined">delete</span>
+                </button>
               </div>
               <img 
                 src={p.image} 
@@ -147,7 +204,7 @@ const Projects: React.FC = () => {
                   </span>
                 ))}
               </div>
-              <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{p.title}</h3>
+              <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors uppercase">{p.title}</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-1">
                 {p.desc}
               </p>
@@ -158,6 +215,16 @@ const Projects: React.FC = () => {
           </div>
         ))}
       </div>
+
+      <ProjectModal 
+        isOpen={isModalOpen} 
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingProject(null);
+        }} 
+        onSave={handleSaveProject} 
+        editingProject={editingProject}
+      />
     </div>
   );
 };

@@ -2,10 +2,16 @@
 export interface Project {
   id: string;
   title: string;
-  description: string;
-  tags: string[];
-  imageUrl: string;
   category: string;
+  tags: string[];
+  desc: string;
+  image: string;
+  videoUrl?: string;
+  projectUrl?: string;
+  sourceUrl?: string;
+  features?: string[];
+  techStack?: string[];
+  longDesc?: string;
 }
 
 export interface Article {
