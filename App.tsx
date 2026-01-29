@@ -143,13 +143,12 @@ const App: React.FC = () => {
       dh: 1080,
       dw: 1920,
       el: '#root',
-      resize: true,
-      allowScroll: true
+      resize: true
     });
   }, []);
 
   return (
-    <div className={`relative min-h-screen overflow-x-hidden flex flex-col font-sans transition-colors duration-500`}>
+    <div className={`relative h-screen overflow-hidden flex flex-col font-sans transition-colors duration-500`}>
       <div className="absolute inset-0 grid-pattern pointer-events-none opacity-20 dark:opacity-40"></div>
       <div className="absolute top-0 right-0 w-[500px] h-[500px] gradient-blur pointer-events-none opacity-30 dark:opacity-100"></div>
       
@@ -167,9 +166,8 @@ const App: React.FC = () => {
           <Route path="/leetcode" element={<LeetCode />} />
           <Route path="/about" element={<About />} />
         </Routes>
+        <Footer onContactOpen={() => setIsContactModalOpen(true)} />
       </main>
-      
-      <Footer onContactOpen={() => setIsContactModalOpen(true)} />
       
       <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
       <AIChat />
