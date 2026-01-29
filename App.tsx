@@ -97,7 +97,7 @@ const Footer = ({ onContactOpen }: { onContactOpen: () => void }) => {
             <span className="material-symbols-outlined text-primary">terminal</span>
             <span className="font-bold text-lg dark:text-white">谢启铜</span>
           </div>
-          <p className="text-slate-500 text-sm">© 2024 • 用心构建每一个像素</p>
+          <p className="text-slate-500 text-sm">© 2026 • 用心构建每一个像素</p>
         </div>
         <div className="flex gap-6">
           <button onClick={onContactOpen} className="text-slate-400 hover:text-primary transition-colors">

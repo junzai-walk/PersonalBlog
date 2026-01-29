@@ -54,7 +54,7 @@ const Home: React.FC = () => {
                 <span className="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold uppercase tracking-tighter">中共党员</span>
               </div>
               <p className="text-slate-600 dark:text-slate-400 text-lg max-w-lg leading-relaxed">
-                专注 React 生态与工程化，致力于构建丝滑、高性能且极具美感的 Web 应用。
+                精通 Vue 与 React 双生态，擅长构建复杂数据可视化、人工智能交互及高性能企业级应用。
               </p>
             </div>
             <div className="flex flex-wrap gap-4">

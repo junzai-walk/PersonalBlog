@@ -6,40 +6,56 @@ const Projects: React.FC = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState('全部');
 
-  const categories = ['全部', 'Vue3', 'React', 'TypeScript', 'Three.js'];
+  const categories = ['全部', 'Vue3', 'Vue2', 'React', 'TypeScript', 'Node.js'];
   
   const projects = [
     {
       id: 'company-official',
       title: '公司官网',
       category: 'Vue3',
-      tags: ['Vue3', 'Tailwind', 'SEO'],
-      desc: '具备高性能响应式设计的官方网站，针对 Core Web Vitals 深度优化，支持国际化内容交付。',
+      tags: ['Vue3', 'TS', 'Vite', 'Pinia'],
+      desc: '使用 Vue3 + TypeScript 开发。实现首页、行业方案、产品中心等模块，采用 Vite 构建，具备卓越的加载性能。',
       image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCzGKFw8DY1EFtoCU_zn-lq6fjIrIEhLO5SDCFHTWM3gWPi5QwIw4bnGSGLBtbpaM3L1i-PlAbdFB83VGGiRWKThwtdMByCvIjo6Gz_M3A77gPPcaRNL7C9_LQ3ND7o1Y2vIjC1Cggo5DInG5_KYjxp0jxOGQ6VG8Ug_w6ifEGLwjUuBWLZtE5xNjYgQwA25KuRmlsAayyLRA3RwXGEwmkzsg0iqZgJpAUnFc7kXHQDUodBR95loOduYGo_41HBmQPQPFHQLFfZzEbm',
     },
     {
-      id: 'data-hub',
-      title: '数据中台',
+      id: 'cross-border-ecommerce',
+      title: '跨境电商购物网站',
       category: 'React',
-      tags: ['React', 'ECharts', 'Redux'],
-      desc: '企业级数据可视化看板，集成实时状态管理系统与高度自定义的分析组件库。',
+      tags: ['React', 'TS', 'Pro-Components', 'ECharts'],
+      desc: '基于 React + TS 构建的购物平台。集成商品分类、海外仓网络、物流方案及 ECharts 报表展示。',
       image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCcr4yDxgFSLOvRu7XxZo4U9uBY00zTcB7jUbY0RFUB5-6-WoaZfFA2KFMFUvAkF1TwF0yqIUuBLqCERPb8nOM0HM6AmDul4oiLImyWBvRai0XwROhqKwWW1EHj93BJbjXkEwYY-dugu5w9bSNreEDs1FvMiv2dVIOctfGL7wfWel97zmBGsjfBElS1b-oN3gsZx7abhja2D44v3mA7gXaspcWSJE7JndWrEjaLQ8Pp9y05iEZCTdrryGye7vrroCC2Zjzmkqzw-Yj-',
     },
     {
-      id: 'smart-ops',
-      title: '智慧运维',
+      id: 'ai-mini-program',
+      title: 'AI 微信小程序',
       category: 'Vue3',
-      tags: ['Vue3', 'WebSocket', 'SCSS'],
-      desc: '工业级运维监控平台，利用 WebSocket 技术实现数据的零延迟实时更新与预警。',
+      tags: ['Vue3', 'Node.js', 'LLM', 'Redis'],
+      desc: '独立开发。集成百度智普大模型，支持文生文、文生图及实时语音识别，对话历史存储于 Redis。',
       image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAdtJlHBFl563CXp_m8SLK844okzZ9qcv87IjkOyUMLaqWNJ4Mf_3ZYWbqae4zn98HDR-sLxDvbWBp-z0lwmNC7d-nYPnjZ_A0M0AeF4J1TuO5WRDPplTGydN0vzudk8YE-fYE3k1FaOEP-g9ybn8m6vmfLoA3iRcSKRrxLZeuagKjDvvT6Gbjsf-ljBWJMdW_zT1-is6tx8jqNc8IhEUzFz03MdRufegPnvyOzSU6lWs85DJAA9J5LAXAr25TQXIOzmaEx6UJi_vnu',
     },
     {
       id: 'boss-3d',
-      title: 'Boss3D 平台',
-      category: 'Three.js',
-      tags: ['Three.js', 'WebGL', 'TypeScript'],
-      desc: '先进的 WebGL 可视化平台，用于建筑效果渲染和交互式 3D 模型操控。',
+      title: 'Boss3D 可视化平台',
+      category: 'React',
+      tags: ['React', 'WebSocket', 'IndexedDB', 'ECharts'],
+      desc: '大型 3D 可视化平台。实现大文件切片上传、WebSocket 三维属性配置及高度定制化 3D 图表。',
       image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkeOGFjl0YtcQ8E4qkK09iZsALDj4r0x5MaGsEWTrsG5uw5myN9t1dwU1zbX3y6LNK-AJlD7V-isBCNmHc7dJcgEbExvBj8ozEXxydzbyJ2Kl_9-KkE6Eiv-o0EB1-1O72kPKQRhtOXWEHGsE4d-pKLdvMXhnt29r9dtMnXYQ4LUofb87dobOfoqh2SIIzO6YQ8HyDBkw9DnJtxx782It6CzBAzuUBZ5CPHiU5AAlbgGBjasFm4za1MkVg6gptm4marhD0r3RajtA4',
+    },
+    {
+      id: 'guan-e-declaration',
+      title: '莞-e 申报小程序',
+      category: 'Vue3',
+      tags: ['Vue3', 'Pinia', 'Face Recognition'],
+      desc: '政府类项目。实现手机号校验、签名画布及基于腾讯云 API 的实时人脸识别。',
+      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCzGKFw8DY1EFtoCU_zn-lq6fjIrIEhLO5SDCFHTWM3gWPi5QwIw4bnGSGLBtbpaM3L1i-PlAbdFB83VGGiRWKThwtdMByCvIjo6Gz_M3A77gPPcaRNL7C9_LQ3ND7o1Y2vIjC1Cggo5DInG5_KYjxp0jxOGQ6VG8Ug_w6ifEGLwjUuBWLZtE5xNjYgQwA25KuRmlsAayyLRA3RwXGEwmkzsg0iqZgJpAUnFc7kXHQDUodBR95loOduYGo_41HBmQPQPFHQLFfZzEbm',
+    },
+    {
+      id: 'data-middle-platform',
+      title: '数据中台',
+      category: 'Vue2',
+      tags: ['Vue2', 'Element-UI', 'Webpack'],
+      desc: '负责指标配置、指标管理、数据诊断等核心功能模块。',
+      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCcr4yDxgFSLOvRu7XxZo4U9uBY00zTcB7jUbY0RFUB5-6-WoaZfFA2KFMFUvAkF1TwF0yqIUuBLqCERPb8nOM0HM6AmDul4oiLImyWBvRai0XwROhqKwWW1EHj93BJbjXkEwYY-dugu5w9bSNreEDs1FvMiv2dVIOctfGL7wfWel97zmBGsjfBElS1b-oN3gsZx7abhja2D44v3mA7gXaspcWSJE7JndWrEjaLQ8Pp9y05iEZCTdrryGye7vrroCC2Zjzmkqzw-Yj-',
     }
   ];
 

@@ -6,10 +6,24 @@ const About: React.FC = () => {
   const [progress, setProgress] = useState(0);
 
   const timeline = [
-    { year: '2023 - 至今', title: '资深前端开发工程师', company: '某知名互联网公司', desc: '主导数据中台架构升级，负责核心业务组件库的研发与维护。' },
-    { year: '2021 - 2023', title: '前端开发工程师', company: '某科技初创企业', desc: '从零构建企业级 SaaS 平台，优化渲染性能提升 40%。' },
-    { year: '2019 - 2021', title: '助理开发工程师', company: '实习与初入职场', desc: '参与多个 Vue3 移动端项目，磨练基础功底。' },
-    { year: '2015 - 2019', title: '学士学位 / 软件工程', company: '南京工程学院', desc: '系统学习计算机基础，期间获得多次校级奖学金。' },
+    { 
+      year: '2025.01 - 至今', 
+      title: '前端开发工程师', 
+      company: '南京凯奥思数据技术有限公司', 
+      desc: '负责公司官网、数据中台、智慧运维及跨境电商购物网站的开发，涉及 Vue3+TS、Vue2、Nuxt 2.0 及 React+TS 等多种技术栈。' 
+    },
+    { 
+      year: '2022.06 - 2024.08', 
+      title: '前端开发工程师', 
+      company: '南京烽火星空通信发展有限公司', 
+      desc: '负责 Boss3D 数据可视化平台、AI 微信小程序及莞-e申报小程序。涉及大文件分片上传、WebSocket 通信、大模型调用及人脸识别等核心技术。' 
+    },
+    { 
+      year: '2018 - 2022', 
+      title: '学士学位 / 计算机相关专业', 
+      company: '南京工程学院', 
+      desc: '系统学习计算机基础知识，于 2022 年顺利毕业并获得学士学位。' 
+    },
   ];
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
