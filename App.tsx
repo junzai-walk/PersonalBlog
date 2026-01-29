@@ -148,7 +148,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className={`relative h-screen overflow-hidden flex flex-col font-sans transition-colors duration-500`}>
+    <div className={`relative h-full overflow-hidden flex flex-col font-sans transition-colors duration-500`}>
       <div className="absolute inset-0 grid-pattern pointer-events-none opacity-20 dark:opacity-40"></div>
       <div className="absolute top-0 right-0 w-[500px] h-[500px] gradient-blur pointer-events-none opacity-30 dark:opacity-100"></div>
       
