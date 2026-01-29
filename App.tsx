@@ -143,7 +143,8 @@ const App: React.FC = () => {
       dh: 1080,
       dw: 1920,
       el: '#root',
-      resize: true
+      resize: true,
+      allowScroll: true
     });
   }, []);
 
@@ -155,7 +156,7 @@ const App: React.FC = () => {
       <ScrollToTop />
       <Header onContactOpen={() => setIsContactModalOpen(true)} theme={theme} toggleTheme={toggleTheme} />
       
-      <main className="flex-grow z-10">
+      <main className="flex-grow z-10 overflow-y-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<Projects />} />
