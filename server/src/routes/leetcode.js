@@ -23,12 +23,19 @@ router.get('/stats', async (req, res) => {
           total_solved: 0,
           accuracy: 0,
           streak_days: 0,
-          global_rank: 0
+          global_rank: 0,
+          weekly_solved: 0
         }
       });
     }
 
-    res.json({ success: true, data: stats[0] });
+    // 确保 accuracy 是数字类型
+    const data = {
+      ...stats[0],
+      accuracy: parseFloat(stats[0].accuracy) || 0
+    };
+
+    res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, message: '获取统计数据失败', error: error.message });
   }
@@ -91,10 +98,22 @@ router.get('/problems', async (req, res) => {
 
     const problems = await db.query(sql, params);
 
-    const formattedProblems = problems.map(p => ({
-      ...p,
-      tags: JSON.parse(p.tags || '[]')
-    }));
+    // 格式化数据，确保 tags 是数组
+    const formattedProblems = problems.map(p => {
+      let tags = [];
+      try {
+        // 尝试解析 JSON
+        tags = typeof p.tags === 'string' ? JSON.parse(p.tags) : (Array.isArray(p.tags) ? p.tags : []);
+      } catch (error) {
+        console.error(`Failed to parse tags for problem ${p.id}:`, error.message);
+        // 如果解析失败，尝试按逗号分割
+        tags = typeof p.tags === 'string' ? p.tags.split(',').map(t => t.trim()) : [];
+      }
+      return {
+        ...p,
+        tags
+      };
+    });
 
     res.json({ success: true, data: formattedProblems });
   } catch (error) {

@@ -93,7 +93,7 @@ const LeetCode: React.FC = () => {
         ) : stats ? (
           [
             { label: '总解题数', value: stats.total_solved.toString(), trend: `本周 +${stats.weekly_solved || 0}`, color: 'easy', icon: 'task_alt', status: 'up' },
-            { label: '正确率', value: `${stats.accuracy.toFixed(1)}%`, trend: '保持稳定', color: 'easy', icon: 'percent', status: 'up' },
+            { label: '正确率', value: `${(typeof stats.accuracy === 'number' ? stats.accuracy : parseFloat(stats.accuracy) || 0).toFixed(1)}%`, trend: '保持稳定', color: 'easy', icon: 'percent', status: 'up' },
             { label: '连续打卡', value: `${stats.streak_days} 天`, trend: '继续加油', color: 'hard', icon: 'local_fire_department', status: 'up' },
             { label: '全球排名', value: `#${stats.global_rank.toLocaleString()}`, trend: '排名前列', color: 'primary', icon: 'leaderboard', status: 'up' },
           ].map((s, idx) => (

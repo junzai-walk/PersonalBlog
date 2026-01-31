@@ -74,10 +74,11 @@ CREATE TABLE articles (
 );
 
 -- 6. 刷题统计表 (LeetCode Stats)
-CREATE TABLE IF NOT EXISTS leetcode_stats (
+DROP TABLE IF EXISTS leetcode_stats;
+CREATE TABLE leetcode_stats (
   id INT PRIMARY KEY,
   total_solved INT DEFAULT 0,
-  accuracy VARCHAR(20),
+  accuracy DECIMAL(5,2) DEFAULT 0.00 COMMENT '正确率，存储为数字，如 94.20 表示 94.2%',
   streak_days INT DEFAULT 0,
   global_rank INT DEFAULT 0,
   weekly_solved INT DEFAULT 0,
@@ -85,8 +86,8 @@ CREATE TABLE IF NOT EXISTS leetcode_stats (
 );
 
 -- 初始化刷题统计
-INSERT IGNORE INTO leetcode_stats (id, total_solved, accuracy, streak_days, global_rank) 
-VALUES (1, 452, '94.2%', 15, 24812);
+INSERT INTO leetcode_stats (id, total_solved, accuracy, streak_days, global_rank, weekly_solved)
+VALUES (1, 452, 94.2, 15, 24812, 0);
 
 -- 7. 刷题记录表 (LeetCode Problems)
 CREATE TABLE IF NOT EXISTS leetcode_problems (

@@ -70,19 +70,19 @@ INSERT IGNORE INTO articles (id, title, excerpt, content, date, reading_time, ca
  '2026-01-10', '20 min', 'Graphics', '["Three.js", "WebGL", "Frontend"]');
 
 -- 6. 刷题统计 (LeetCode Stats) - 更新默认记录
-UPDATE leetcode_stats SET 
+UPDATE leetcode_stats SET
   total_solved = 524,
-  accuracy = '95.8%',
+  accuracy = 95.8,
   streak_days = 21,
   global_rank = 12500,
   weekly_solved = 15
 WHERE id = 1;
 
 -- 7. 刷题记录 (LeetCode Problems)
-INSERT IGNORE INTO leetcode_problems (problem_id, title, difficulty, tags, url) VALUES 
-(1, 'Two Sum', 'Easy', '["Array", "Hash Table"]', 'https://leetcode.com/problems/two-sum/'),
-(3, 'Longest Substring Without Repeating Characters', 'Medium', '["String", "Sliding Window"]', 'https://leetcode.com/problems/longest-substring-without-repeating-characters/'),
-(42, 'Trapping Rain Water', 'Hard', '["Array", "Two Pointers", "Stack"]', 'https://leetcode.com/problems/trapping-rain-water/');
+INSERT IGNORE INTO leetcode_problems (problem_id, title, difficulty, tags, url) VALUES
+(1, 'Two Sum', '简单', '["Array", "Hash Table"]', 'https://leetcode.com/problems/two-sum/'),
+(3, 'Longest Substring Without Repeating Characters', '中等', '["String", "Sliding Window"]', 'https://leetcode.com/problems/longest-substring-without-repeating-characters/'),
+(42, 'Trapping Rain Water', '困难', '["Array", "Two Pointers", "Stack"]', 'https://leetcode.com/problems/trapping-rain-water/');
 
 -- 8. 职业生涯 (Career Timeline)
 INSERT IGNORE INTO career_timeline (year, title, company, description, start_date) VALUES 
