@@ -1,23 +1,31 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getLeetCodeStats, getLeetCodeProblems, type LeetCodeStats, type LeetCodeProblem } from '../api/leetcode';
 
 const LeetCode: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  
-  const stats = [
-    { label: '总解题数', value: '452', trend: '本周 +12', color: 'easy', icon: 'task_alt', status: 'up' },
-    { label: '正确率', value: '94.2%', trend: '提升 0.5%', color: 'easy', icon: 'percent', status: 'up' },
-    { label: '连续打卡', value: '15 天', trend: '距巅峰还差 2 天', color: 'hard', icon: 'local_fire_department', status: 'down' },
-    { label: '全球排名', value: '#24,812', trend: '排名前 2%', color: 'primary', icon: 'leaderboard', status: 'up' },
-  ];
+  const [stats, setStats] = useState<LeetCodeStats | null>(null);
+  const [problems, setProblems] = useState<LeetCodeProblem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const problems = [
-    { id: 16, title: '最接近的三数之和', diff: '中等', tags: ['数组', '双指针'], time: '2 小时前', url: 'https://leetcode.cn/problems/3sum-closest/' },
-    { id: 20, title: '有效的括号', diff: '简单', tags: ['栈', '字符串'], time: '昨天', url: 'https://leetcode.cn/problems/valid-parentheses/' },
-    { id: 23, title: '合并 K 个升序链表', diff: '困难', tags: ['链表', '分治算法'], time: '2 天前', url: 'https://leetcode.cn/problems/merge-k-sorted-lists/' },
-    { id: 11, title: '盛最多水的容器', diff: '中等', tags: ['数组', '贪心算法'], time: '3 天前', url: 'https://leetcode.cn/problems/container-with-most-water/' },
-    { id: 42, title: '接雨水', diff: '困难', tags: ['栈', '单调栈'], time: '5 天前', url: 'https://leetcode.cn/problems/trapping-rain-water/' },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [statsData, problemsData] = await Promise.all([
+          getLeetCodeStats(),
+          getLeetCodeProblems({ limit: 20 })
+        ]);
+        setStats(statsData);
+        setProblems(problemsData);
+      } catch (error) {
+        console.error('Failed to fetch LeetCode data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const filteredProblems = problems.filter(p => 
     p.title.includes(searchTerm) || p.tags.some(t => t.includes(searchTerm))
@@ -73,18 +81,38 @@ const LeetCode: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
-        {stats.map((s, idx) => (
-          <div key={idx} className="bg-white dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{s.label}</p>
-              <span className={`material-symbols-outlined text-primary`}>{s.icon}</span>
+        {loading ? (
+          // Loading skeleton
+          Array.from({ length: 4 }).map((_, idx) => (
+            <div key={idx} className="bg-white dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl shadow-sm animate-pulse">
+              <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-4"></div>
+              <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
             </div>
-            <p className="text-3xl font-bold tracking-tight mb-1">{s.value}</p>
-            <p className={`${s.color === 'easy' ? 'text-easy' : s.color === 'hard' ? 'text-hard' : 'text-primary'} text-sm font-medium flex items-center gap-1`}>
-              {s.trend}
-            </p>
+          ))
+        ) : stats ? (
+          [
+            { label: '总解题数', value: stats.total_solved.toString(), trend: `本周 +${stats.weekly_solved || 0}`, color: 'easy', icon: 'task_alt', status: 'up' },
+            { label: '正确率', value: `${stats.accuracy.toFixed(1)}%`, trend: '保持稳定', color: 'easy', icon: 'percent', status: 'up' },
+            { label: '连续打卡', value: `${stats.streak_days} 天`, trend: '继续加油', color: 'hard', icon: 'local_fire_department', status: 'up' },
+            { label: '全球排名', value: `#${stats.global_rank.toLocaleString()}`, trend: '排名前列', color: 'primary', icon: 'leaderboard', status: 'up' },
+          ].map((s, idx) => (
+            <div key={idx} className="bg-white dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{s.label}</p>
+                <span className={`material-symbols-outlined text-primary`}>{s.icon}</span>
+              </div>
+              <p className="text-3xl font-bold tracking-tight mb-1">{s.value}</p>
+              <p className={`${s.color === 'easy' ? 'text-easy' : s.color === 'hard' ? 'text-hard' : 'text-primary'} text-sm font-medium flex items-center gap-1`}>
+                {s.trend}
+              </p>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-4 text-center py-10 text-slate-400">
+            <p>暂无统计数据</p>
           </div>
-        ))}
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -103,33 +131,57 @@ const LeetCode: React.FC = () => {
             </div>
           </div>
           <div className="bg-white dark:bg-card-dark border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
-              {filteredProblems.map((p) => (
-                <div key={p.id} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase ${
-                        p.diff === '简单' ? 'bg-easy/10 text-easy' : p.diff === '中等' ? 'bg-medium/10 text-medium' : 'bg-hard/10 text-hard'
-                      }`}>
-                        {p.diff}
-                      </span>
-                      <h3 className="font-bold">{p.id}. {p.title}</h3>
+            {loading ? (
+              <div className="p-8 text-center text-slate-400 animate-pulse">
+                <p>加载题目列表中...</p>
+              </div>
+            ) : filteredProblems.length > 0 ? (
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                {filteredProblems.map((p) => {
+                  // 格式化时间显示
+                  const formatTime = (dateStr: string) => {
+                    const date = new Date(dateStr);
+                    const now = new Date();
+                    const diff = now.getTime() - date.getTime();
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    if (days === 0) return '今天';
+                    if (days === 1) return '昨天';
+                    if (days < 7) return `${days} 天前`;
+                    return date.toLocaleDateString('zh-CN');
+                  };
+
+                  return (
+                    <div key={p.id} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase ${
+                            p.difficulty === '简单' ? 'bg-easy/10 text-easy' : p.difficulty === '中等' ? 'bg-medium/10 text-medium' : 'bg-hard/10 text-hard'
+                          }`}>
+                            {p.difficulty}
+                          </span>
+                          <h3 className="font-bold">{p.problem_id ? `${p.problem_id}. ` : ''}{p.title}</h3>
+                        </div>
+                        <span className="text-xs text-slate-500 font-medium">{formatTime(p.solved_at)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex gap-2">
+                          {p.tags.map(tag => (
+                            <span key={tag} className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500 font-bold">{tag}</span>
+                          ))}
+                        </div>
+                        <a href={p.url} target="_blank" rel="noreferrer" className="text-primary text-xs font-bold flex items-center gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                          查看题解 <span className="material-symbols-outlined !text-sm">open_in_new</span>
+                        </a>
+                      </div>
                     </div>
-                    <span className="text-xs text-slate-500 font-medium">{p.time}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      {p.tags.map(tag => (
-                        <span key={tag} className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500 font-bold">{tag}</span>
-                      ))}
-                    </div>
-                    <a href={p.url} target="_blank" rel="noreferrer" className="text-primary text-xs font-bold flex items-center gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                      查看题解 <span className="material-symbols-outlined !text-sm">open_in_new</span>
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-slate-400">
+                <p>未找到匹配的题目</p>
+              </div>
+            )}
           </div>
         </div>
 

@@ -1,18 +1,37 @@
-
-import React, { useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Project } from '../types';
+import { getProjectDetail } from '../api/projects';
 
 const ProjectDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const project = useMemo(() => {
-    const saved = localStorage.getItem('portfolio-projects');
-    if (!saved) return null;
-    const projects: Project[] = JSON.parse(saved);
-    return projects.find(p => p.id === id) || null;
+  useEffect(() => {
+    const fetchDetail = async () => {
+      if (!id) return;
+      setLoading(true);
+      try {
+        const data = await getProjectDetail(id);
+        setProject(data as any);
+      } catch (error) {
+        console.error('Failed to fetch project detail:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetail();
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className="max-w-[1100px] mx-auto px-6 py-20 text-center animate-pulse">
+        <p className="text-slate-400">正在加载项目详情...</p>
+      </div>
+    );
+  }
 
   if (!project) {
     return (
@@ -41,17 +60,17 @@ const ProjectDetail: React.FC = () => {
             </span>
             <h1 className="text-4xl md:text-5xl font-black mb-4 uppercase">{project.title}</h1>
             <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed">
-              {project.desc}
+              {project.description}
             </p>
           </div>
 
-          {project.longDesc && (
+          {project.long_description && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">description</span> 项目背景
               </h2>
               <div className="text-slate-600 dark:text-slate-400 leading-loose text-lg whitespace-pre-wrap">
-                {project.longDesc}
+                {project.long_description}
               </div>
             </div>
           )}
@@ -76,9 +95,9 @@ const ProjectDetail: React.FC = () => {
         <div className="space-y-10">
           <div className="space-y-6">
             <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 aspect-video bg-black flex items-center justify-center">
-              {project.videoUrl ? (
+              {project.video_url ? (
                 <video 
-                  src={project.videoUrl} 
+                  src={project.video_url} 
                   controls 
                   className="w-full h-full object-contain"
                   poster={project.image}
@@ -88,7 +107,7 @@ const ProjectDetail: React.FC = () => {
               )}
             </div>
             
-            {project.videoUrl && project.image && (
+            {project.video_url && project.image && (
               <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
                 <p className="text-xs font-bold text-slate-400 uppercase mb-2">项目截图</p>
                 <img src={project.image} alt="Thumbnail" className="w-32 aspect-video object-cover rounded-lg border border-slate-200 dark:border-slate-700" />
@@ -112,9 +131,9 @@ const ProjectDetail: React.FC = () => {
           )}
 
           <div className="flex flex-col sm:flex-row gap-4">
-            {project.projectUrl && (
+            {project.project_url && (
               <a 
-                href={project.projectUrl} 
+                href={project.project_url} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex-1 py-4 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-blue-600 transition-all shadow-lg shadow-primary/20"
@@ -122,9 +141,9 @@ const ProjectDetail: React.FC = () => {
                 <span className="material-symbols-outlined">launch</span> 在线演示
               </a>
             )}
-            {project.sourceUrl && (
+            {project.source_url && (
               <a 
-                href={project.sourceUrl} 
+                href={project.source_url} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex-1 py-4 bg-slate-200 dark:bg-slate-800 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all font-bold"

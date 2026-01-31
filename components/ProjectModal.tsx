@@ -14,14 +14,14 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onSave, ed
     title: '',
     category: 'Vue3',
     tags: [],
-    desc: '',
+    description: '',
     image: '',
-    videoUrl: '',
-    projectUrl: '',
-    sourceUrl: '',
+    video_url: '',
+    project_url: '',
+    source_url: '',
     features: [],
     techStack: [],
-    longDesc: ''
+    long_description: ''
   });
 
   const [tagInput, setTagInput] = useState('');
@@ -36,14 +36,14 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onSave, ed
         title: '',
         category: 'Vue3',
         tags: [],
-        desc: '',
+        description: '',
         image: '',
-        videoUrl: '',
-        projectUrl: '',
-        sourceUrl: '',
+        video_url: '',
+        project_url: '',
+        source_url: '',
         features: [],
         techStack: [],
-        longDesc: ''
+        long_description: ''
       });
     }
   }, [editingProject, isOpen]);
@@ -55,7 +55,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onSave, ed
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'videoUrl') => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'image' | 'video_url') => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -137,8 +137,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onSave, ed
             <label className="text-sm font-bold text-slate-500 dark:text-slate-400">简短描述</label>
             <textarea
               required
-              name="desc"
-              value={formData.desc}
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               rows={2}
               placeholder="一句话介绍项目核心价值..."
@@ -149,8 +149,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onSave, ed
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-500 dark:text-slate-400">详细介绍</label>
             <textarea
-              name="longDesc"
-              value={formData.longDesc}
+              name="long_description"
+              value={formData.long_description}
               onChange={handleChange}
               rows={4}
               placeholder="详细描述项目背景、解决方案、技术细节等..."
@@ -179,15 +179,15 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onSave, ed
               <label className="text-sm font-bold text-slate-500 dark:text-slate-400">项目视频 (视频地址或上传)</label>
               <div className="flex gap-2">
                 <input
-                  name="videoUrl"
-                  value={formData.videoUrl}
+                  name="video_url"
+                  value={formData.video_url}
                   onChange={handleChange}
                   placeholder="https://..."
                   className="flex-1 h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-primary outline-none transition-all"
                 />
                 <label className="h-12 w-12 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-200 transition-colors">
                   <span className="material-symbols-outlined">video_file</span>
-                  <input type="file" accept="video/*" className="hidden" onChange={(e) => handleFileUpload(e, 'videoUrl')} />
+                  <input type="file" accept="video/*" className="hidden" onChange={(e) => handleFileUpload(e, 'video_url')} />
                 </label>
               </div>
             </div>
@@ -197,8 +197,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onSave, ed
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-500 dark:text-slate-400">在线演示地址</label>
               <input
-                name="projectUrl"
-                value={formData.projectUrl}
+                name="project_url"
+                value={formData.project_url}
                 onChange={handleChange}
                 placeholder="https://..."
                 className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-primary outline-none transition-all"
@@ -207,8 +207,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ isOpen, onClose, onSave, ed
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-500 dark:text-slate-400">源码地址</label>
               <input
-                name="sourceUrl"
-                value={formData.sourceUrl}
+                name="source_url"
+                value={formData.source_url}
                 onChange={handleChange}
                 placeholder="https://github.com/..."
                 className="w-full h-12 px-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-primary outline-none transition-all"

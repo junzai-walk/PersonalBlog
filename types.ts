@@ -4,22 +4,23 @@ export interface Project {
   title: string;
   category: string;
   tags: string[];
-  desc: string;
+  description: string;
   image: string;
-  videoUrl?: string;
-  projectUrl?: string;
-  sourceUrl?: string;
+  video_url?: string;
+  project_url?: string;
+  source_url?: string;
   features?: string[];
   techStack?: string[];
-  longDesc?: string;
+  long_description?: string;
 }
 
 export interface Article {
   id: string;
   title: string;
   excerpt: string;
+  content?: string;
   date: string;
-  readingTime: string;
+  reading_time: string;
   category: string;
   tags: string[];
 }

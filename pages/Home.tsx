@@ -1,35 +1,48 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Terminal from '../components/Terminal';
+import { getActivities, getAvatar, updateAvatar, getSkills, type Activity, type Skill } from '../api/home';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const [profilePic, setProfilePic] = useState<string>("https://lh3.googleusercontent.com/aida-public/AB6AXuBeDkCgjbrtgqUm8LoVTgGBa4Qco20Hr8QfCYoe7Ov_nQlNtyavXYw0zqC7dzDGVMKT0mbJ7sq5tz3dgdaNgvuw5lfxqoEj5j-8QRa2WA2ZLsMVwf2Sn6chqDioaMhWXBxstyVaNHctv5cQcqN7RDGhHH8tQIlftiZsCjNDrbY5UKGBIMeXu-anbIzaacWFjQYwwVjrifP6azkOvedn3jJEp6I4IumXKpYw2KVGktPVvAOEo3AZk9Nl4XPbOLDNwWQHjOZ8k2h3iUGH");
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [avatar, skillsRes, activitiesRes] = await Promise.all([
+          getAvatar(),
+          getSkills(),
+          getActivities(3)
+        ]);
+        if (avatar) setProfilePic(avatar);
+        setSkills(skillsRes);
+        setActivities(activitiesRes);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) setProfilePic(event.target.result as string);
-      };
-      reader.readAsDataURL(e.target.files[0]);
+      const file = e.target.files[0];
+      try {
+        const newAvatarUrl = await updateAvatar(file);
+        if (newAvatarUrl) {
+          setProfilePic(newAvatarUrl);
+        }
+      } catch (error) {
+        console.error('Failed to update avatar:', error);
+      }
     }
   };
 
-  const skills = [
-    { name: 'React', icon: 'code', color: 'text-blue-500' },
-    { name: 'Vue 3', icon: 'data_object', color: 'text-emerald-500' },
-    { name: 'TypeScript', icon: 'terminal', color: 'text-blue-600' },
-    { name: 'Vite', icon: 'bolt', color: 'text-amber-500' },
-    { name: 'Next.js', icon: 'layers', color: 'text-slate-900 dark:text-white' },
-    { name: 'Tailwind', icon: 'brush', color: 'text-sky-400' },
-    { name: 'Node.js', icon: 'database', color: 'text-green-600' },
-    { name: 'Three.js', icon: 'view_in_ar', color: 'text-indigo-500' },
-    { name: 'GraphQL', icon: 'hub', color: 'text-pink-500' },
-    { name: 'Docker', icon: 'container', color: 'text-blue-400' }
-  ];
 
   return (
     <div className="flex flex-col items-center">
@@ -101,8 +114,10 @@ const Home: React.FC = () => {
         <h3 className="text-center text-slate-400 font-bold uppercase tracking-[0.2em] text-xs mb-10">我的技能宇宙 / TECH STACK</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {skills.map((skill) => (
-            <div key={skill.name} className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white dark:bg-[#1a2333] border border-slate-100 dark:border-slate-800 hover:border-primary/40 transition-all hover:-translate-y-1 shadow-sm hover:shadow-xl group">
-              <span className={`material-symbols-outlined text-4xl ${skill.color} group-hover:scale-110 transition-transform`}>{skill.icon}</span>
+            <div key={skill.id} className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white dark:bg-[#1a2333] border border-slate-100 dark:border-slate-800 hover:border-primary/40 transition-all hover:-translate-y-1 shadow-sm hover:shadow-xl group">
+              <span className={`material-symbols-outlined text-4xl ${skill.color} group-hover:scale-110 transition-transform`}>
+                {skill.icon.replace('v-icon-', '').replace('vue', 'data_object').replace('react', 'code').replace('typescript', 'terminal').replace('nodejs', 'database').replace('mysql', 'storage').replace('tailwind', 'brush').replace('vite', 'bolt').replace('threejs', 'view_in_ar')}
+              </span>
               <p className="text-slate-700 dark:text-white text-sm font-bold">{skill.name}</p>
             </div>
           ))}
@@ -125,22 +140,20 @@ const Home: React.FC = () => {
             <span className="material-symbols-outlined text-primary">history</span> 最近活动
           </h2>
           <div className="grid grid-cols-[40px_1fr] gap-x-4">
-            {[
-              { title: '发布文章：高级 React 性能优化模式', date: '2023-11-15 • 博客文章', icon: 'article', desc: '深入探讨企业级应用中的 Memoization、虚拟列表滚动以及高效的组件拆分方案。' },
-              { title: '开源发布：FlexiGrid-UI 框架', date: '2023-11-02 • GitHub', icon: 'commit', desc: '提交了 v1.0.4 版本，该布局库具有零运行时 CSS 开销的特性。' },
-              { title: '加入 Tech Frontier 技术社区', date: '2023-10-20 • 开发者社区', icon: 'groups', desc: '参与每月一次的架构设计圆桌会议，与业内专家共同探讨前沿技术。' }
-            ].map((item, idx, arr) => (
-              <React.Fragment key={idx}>
+            {activities.map((item, idx, arr) => (
+              <React.Fragment key={item.id}>
                 <div className="flex flex-col items-center gap-1">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-primary text-xl">{item.icon}</span>
+                    <span className="material-symbols-outlined text-primary text-xl">
+                      {item.icon.replace('v-icon-', '').replace('nodejs', 'database').replace('web', 'language').replace('github', 'terminal').replace('article', 'description').replace('leetcode', 'code')}
+                    </span>
                   </div>
                   {idx !== arr.length - 1 && <div className="w-[2px] bg-slate-200 dark:bg-[#324467] grow my-2"></div>}
                 </div>
                 <div className={`flex flex-1 flex-col ${idx !== arr.length - 1 ? 'pb-10' : ''}`}>
                   <p className="text-slate-900 dark:text-white text-lg font-bold">{item.title}</p>
-                  <p className="text-slate-500 dark:text-[#92a4c9] text-sm mt-1">{item.date}</p>
-                  <p className="text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">{item.desc}</p>
+                  <p className="text-slate-500 dark:text-[#92a4c9] text-sm mt-1">{item.date} • {item.type}</p>
+                  <p className="text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">{item.description}</p>
                 </div>
               </React.Fragment>
             ))}
